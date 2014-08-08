@@ -78,8 +78,6 @@ public class GameActivity extends Activity implements
     private static String mMyId;
     private static ArrayList<Participant> mParticipants;
 
-
-
     /**
      * Called when the activity is starting. Restores the activity state.
      */
