@@ -7,17 +7,26 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.realtime.Room;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
+
+import java.util.List;
 
 public class GameActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        RoomUpdateListener,
+        RoomStatusUpdateListener,
+        View.OnClickListener {
 
     private static final String TAG = "GameActivity";
 
@@ -165,5 +174,91 @@ public class GameActivity extends Activity implements
             Log.e(TAG, "Exception while starting resolution activity", e);
             retryConnecting();
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+
+    @Override
+    public void onRoomConnecting(Room room) {
+
+    }
+
+    @Override
+    public void onRoomAutoMatching(Room room) {
+
+    }
+
+    @Override
+    public void onPeerInvitedToRoom(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onPeerDeclined(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onPeerJoined(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onPeerLeft(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onConnectedToRoom(Room room) {
+
+    }
+
+    @Override
+    public void onDisconnectedFromRoom(Room room) {
+
+    }
+
+    @Override
+    public void onPeersConnected(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onPeersDisconnected(Room room, List<String> strings) {
+
+    }
+
+    @Override
+    public void onP2PConnected(String s) {
+
+    }
+
+    @Override
+    public void onP2PDisconnected(String s) {
+
+    }
+
+    @Override
+    public void onRoomCreated(int i, Room room) {
+
+    }
+
+    @Override
+    public void onJoinedRoom(int i, Room room) {
+
+    }
+
+    @Override
+    public void onLeftRoom(int i, String s) {
+
+    }
+
+    @Override
+    public void onRoomConnected(int i, Room room) {
+
     }
 }
