@@ -14,7 +14,7 @@
         android:id="@+id/bQuickGame"
         android:layout_marginTop="35dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/tvTittle"
          />
 
     <Button
@@ -49,7 +49,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Pilotta"
         android:textSize="50dp"
-        android:id="@+id/textView"
+        android:id="@+id/tvTittle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 

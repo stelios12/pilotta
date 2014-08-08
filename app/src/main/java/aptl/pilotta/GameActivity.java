@@ -8,6 +8,7 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -58,6 +59,7 @@ public class GameActivity extends Activity implements
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
         setContentView(R.layout.main_screen);
+        initialize();
     }
 
     /**
@@ -67,6 +69,13 @@ public class GameActivity extends Activity implements
      * and {@code OnConnectionFailedListener} on the
      * activities itself.
      */
+
+    private void initialize(){
+        Button bExit = (Button) findViewById(R.id.bExit);
+        bExit.setOnClickListener(this);
+
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -179,6 +188,17 @@ public class GameActivity extends Activity implements
 
     @Override
     public void onClick(View v) {
+        switch(v.getId()){
+
+            case (R.id.bExit):
+                finish();
+                break;
+            case (R.id.bChallengeFriends):    // enter the rest of the button attributes
+
+                break;
+            default:
+                Log.d("on Click", "invalid Opeation");
+        }
 
     }
 
