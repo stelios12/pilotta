@@ -57,6 +57,7 @@ public class GameActivity extends Activity implements
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
+        setContentView(R.layout.main_screen);
     }
 
     /**
