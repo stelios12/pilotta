@@ -2,16 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
-
+    buildToolsVersion '20.0.0'
     defaultConfig {
-        applicationId "aptl.pilotta"
+        applicationId 'aptl.pilotta'
         minSdkVersion 14
         targetSdkVersion 20
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
-
     signingConfigs {
         debug {
             storeFile file("debug.keystore")
@@ -24,7 +22,6 @@ android {
             keyPassword "android"
         }
     }
-
     buildTypes {
         release {
             runProguard false
@@ -36,9 +33,11 @@ android {
             signingConfig signingConfigs.myConfig
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.2.08'
 }
