@@ -1,5 +1,7 @@
 package aptl.pilotta.game.deck;
 
+import java.io.Serializable;
+
 /**
  * Created by constantinos on 08/08/2014.
  */
@@ -23,7 +25,9 @@ public class Card {
         return value;
     }
 
-    public final int getImageRes() {return imageRes; }
+    public final int getImageRes() {
+        return imageRes;
+    }
 
     @Override
     public String toString() {

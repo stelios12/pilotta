@@ -240,6 +240,7 @@ public class GameActivity extends Activity implements
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                 // go to game screen
+                break;
         }
     }
 
