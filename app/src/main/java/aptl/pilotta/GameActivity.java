@@ -73,7 +73,6 @@ public class GameActivity extends Activity implements
     private void initialize(){
         Button bExit = (Button) findViewById(R.id.bExit);
         bExit.setOnClickListener(this);
-
     }
 
     @Override
@@ -197,7 +196,7 @@ public class GameActivity extends Activity implements
 
                 break;
             default:
-                Log.d("on Click", "invalid Opeation");
+                Log.d("on Click", "invalid Operation");
         }
 
     }
