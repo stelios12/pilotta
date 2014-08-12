@@ -5,14 +5,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 
-import com.google.android.gms.cast.Cast;
-import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,6 +24,7 @@ import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMultiplayer;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -34,12 +34,17 @@ import com.google.android.gms.plus.Plus;
 import java.util.ArrayList;
 import java.util.List;
 
+import aptl.pilotta.game.comm.HashDecide;
+import aptl.pilotta.game.utils.Serializer;
+import aptl.pilotta.game.utils.Utils;
+
 public class GameActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener,
         RoomStatusUpdateListener,
         RealTimeMessageReceivedListener,
+        RealTimeMultiplayer.ReliableMessageSentCallback,
         View.OnClickListener {
 
     private static final String TAG = "GameActivity";
@@ -77,6 +82,10 @@ public class GameActivity extends Activity implements
     private static String mRoomId;
     private static String mMyId;
     private static ArrayList<Participant> mParticipants;
+    private static int myHashcode;
+    private static int times = 0;
+    private static boolean decider = false;
+    private static Bitmap[] cardRes;
 
     /**
      * Called when the activity is starting. Restores the activity state.
@@ -201,6 +210,7 @@ public class GameActivity extends Activity implements
                 break;
             case RC_WAITING_ROOM:
                 if (resultCode == Activity.RESULT_OK) {
+                    startGame();
                     // (start game)
                 }
                 else if (resultCode == Activity.RESULT_CANCELED) {
@@ -578,7 +588,23 @@ public class GameActivity extends Activity implements
         // cancel the game if enough people have declined the invitation or left the room.
         // You can check a participant's status with Participant.getStatus().
         // (Also, your UI should have a Cancel button that cancels the game too)
-        return true;
+        return false;
+    }
+
+    private void startGame() {
+
+        setContentView(R.layout.static_test);
+        for (int i = 0; i < cardRes.length; i++) {
+            cardRes[i] = BitmapFactory.decodeResource(getResources(), Utils.imageResources[i]);
+        }
+
+        myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+        HashDecide decide = new HashDecide(myHashcode);
+        byte[] encoded = Serializer.serialize(decide);
+        for (Participant p : mParticipants) {
+            Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
+        }
+
     }
 
 
@@ -586,6 +612,25 @@ public class GameActivity extends Activity implements
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+
+        byte[] data = realTimeMessage.getMessageData();
+        Object decoded = Serializer.deserialize(data);
+
+        if (decoded instanceof HashDecide) {
+            times++;
+            myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+            HashDecide hd = (HashDecide)decoded;
+            decider = myHashcode > hd.getHashcode();
+            if (times == 3) {
+                if (decider) {
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRealTimeMessageSent(int i, int i2, String s) {
 
     }
 }
