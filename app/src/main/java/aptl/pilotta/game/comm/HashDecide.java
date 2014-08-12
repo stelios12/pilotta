@@ -1,9 +1,11 @@
 package aptl.pilotta.game.comm;
 
+import java.io.Serializable;
+
 /**
  * Created by constantinos on 12/08/2014.
  */
-public class HashDecide {
+public class HashDecide implements Serializable {
 
     private final int hashcode;
 

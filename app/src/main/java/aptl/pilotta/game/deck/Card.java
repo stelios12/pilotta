@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by constantinos on 08/08/2014.
  */
-public class Card {
+public class Card implements Serializable {
 
     private final Kind kind;
     private final Value value;

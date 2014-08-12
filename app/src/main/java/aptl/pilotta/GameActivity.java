@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aptl.pilotta.game.comm.HashDecide;
+import aptl.pilotta.game.comm.PlayerCard;
+import aptl.pilotta.game.deck.Card;
+import aptl.pilotta.game.deck.Dealer;
 import aptl.pilotta.game.utils.Serializer;
-import aptl.pilotta.game.utils.Utils;
 
 public class GameActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -84,8 +84,8 @@ public class GameActivity extends Activity implements
     private static ArrayList<Participant> mParticipants;
     private static int myHashcode;
     private static int times = 0;
-    private static boolean decider = false;
-    private static Bitmap[] cardRes = new Bitmap[32];
+    private static boolean decider = true;
+    private static GameView gameView;
 
     /**
      * Called when the activity is starting. Restores the activity state.
@@ -116,6 +116,12 @@ public class GameActivity extends Activity implements
         findViewById(R.id.bInbox).setOnClickListener(this);
         findViewById(R.id.bQuickGame).setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.bLogOut).setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -267,8 +273,10 @@ public class GameActivity extends Activity implements
     @Override
     public void onConnected(Bundle connectionHint) {
         // show sign-out button, hide the sign-in button
-        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        findViewById(R.id.bLogOut).setVisibility(View.VISIBLE);
+        if (findViewById(R.id.sign_in_button) != null) {
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.bLogOut).setVisibility(View.VISIBLE);
+        }
 
         Log.i(TAG, "GoogleApiClient connected");
         // TODO: Start making API requests.
@@ -535,7 +543,8 @@ public class GameActivity extends Activity implements
 
     @Override
     public void onLeftRoom(int i, String s) {
-
+        times = 0;
+        decider = true;
     }
 
     @Override
@@ -594,21 +603,18 @@ public class GameActivity extends Activity implements
 
     private void startGame() {
 
-        setContentView(R.layout.static_test);
-        for (int i = 0; i < cardRes.length; i++) {
-            cardRes[i] = BitmapFactory.decodeResource(getResources(), Utils.imageResources[i]);
-        }
+        gameView = new GameView(this);
+        gameView.setBackgroundResource(R.drawable.green_back);
+        setContentView(gameView);
 
-        for (Participant p : mParticipants) {
-            Log.d("P debug",p.getParticipantId());
-        }
-
-        /*myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+        myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
         HashDecide decide = new HashDecide(myHashcode);
         byte[] encoded = Serializer.serialize(decide);
         for (Participant p : mParticipants) {
-            Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
-        }*/
+            if (mMyId != p.getParticipantId()) {
+                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
+            }
+        }
 
     }
 
@@ -625,12 +631,33 @@ public class GameActivity extends Activity implements
             times++;
             myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
             HashDecide hd = (HashDecide)decoded;
-            decider = myHashcode > hd.getHashcode();
+            decider = decider &&  myHashcode > hd.getHashcode();
             if (times == 3) {
                 if (decider) {
-
+                    Log.d("decide","master");
+                    Dealer d = new Dealer();
+                    Log.d("cards",Integer.toString(d.deck.size()));
+                    Log.d("size",Integer.toString(mParticipants.size()));
+                    for (Participant p : mParticipants) {
+                        if (mMyId != p.getParticipantId()) {
+                            for (int i = 0; i <8; i++) {
+                                Card c = d.giveCard();
+                                PlayerCard pc = new PlayerCard(c);
+                                byte[] encoded = Serializer.serialize(pc);
+                                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
+                            }
+                        }
+                    }
+                } else {
+                    Log.d("decide", "not master");
                 }
             }
+        } else if (decoded instanceof PlayerCard) {
+            Log.d("Card","setting card");
+            PlayerCard pc = (PlayerCard)decoded;
+            Card c = pc.getCard();
+            gameView.addCard(c);
+            gameView.invalidate();
         }
     }
 
