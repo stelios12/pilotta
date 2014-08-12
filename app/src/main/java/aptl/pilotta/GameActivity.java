@@ -588,7 +588,7 @@ public class GameActivity extends Activity implements
         // cancel the game if enough people have declined the invitation or left the room.
         // You can check a participant's status with Participant.getStatus().
         // (Also, your UI should have a Cancel button that cancels the game too)
-        return false;
+        return true;
     }
 
     private void startGame() {
@@ -598,12 +598,16 @@ public class GameActivity extends Activity implements
             cardRes[i] = BitmapFactory.decodeResource(getResources(), Utils.imageResources[i]);
         }
 
-        myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+        for (Participant p : mParticipants) {
+            Log.d("P debug",p.getParticipantId());
+        }
+
+        /*myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
         HashDecide decide = new HashDecide(myHashcode);
         byte[] encoded = Serializer.serialize(decide);
         for (Participant p : mParticipants) {
             Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
-        }
+        }*/
 
     }
 
