@@ -85,7 +85,7 @@ public class GameActivity extends Activity implements
     private static int myHashcode;
     private static int times = 0;
     private static boolean decider = false;
-    private static Bitmap[] cardRes;
+    private static Bitmap[] cardRes = new Bitmap[32];
 
     /**
      * Called when the activity is starting. Restores the activity state.
