@@ -96,7 +96,6 @@ public class GameActivity extends Activity implements
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
-        setContentView(R.layout.main_screen);
         initialize();
     }
 
@@ -109,6 +108,7 @@ public class GameActivity extends Activity implements
      */
 
     private void initialize(){
+        setContentView(R.layout.main_screen);
         findViewById(R.id.bExit).setOnClickListener(this);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.bLogOut).setOnClickListener(this);
@@ -489,6 +489,7 @@ public class GameActivity extends Activity implements
             // cancel the game
             Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            initialize();
         }
     }
 
