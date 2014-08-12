@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/green_back">
+
+
+    <TableLayout
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bOpen"
+        android:id="@+id/tableLayout">
+       <ScrollView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:id="@+id/svBet"
+           >
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:textAlignment="center"
+                android:id="@+id/tvPlayer1"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:text="Player1"
+                android:layout_weight="1"
+                android:textSize="22dp"
+                > </TextView>
+            <TextView
+                android:id="@+id/tvPlayer2"
+                android:textAlignment="center"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:text="Player2"
+                android:layout_weight="1"
+                android:textSize="22dp"
+                > </TextView>
+            <TextView
+                android:id="@+id/tvPlayer3"
+                android:textAlignment="center"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:text="Player3"
+                android:layout_weight="1"
+                android:textSize="22dp"
+                > </TextView>
+            <TextView
+                android:id="@+id/tvPlayer4"
+                android:textAlignment="center"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:text="Player4"
+                android:layout_weight="1"
+                android:textSize="22dp"
+                > </TextView>
+
+
+        </TableRow>
+       </ScrollView>
+
+
+
+    </TableLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pass"
+        android:id="@+id/bPass"
+        android:layout_toStartOf="@+id/bOpen"
+
+        android:layout_below="@+id/tableLayout"
+        android:layout_toLeftOf="@+id/bOpen" />
+
+    <NumberPicker
+        android:layout_marginLeft="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/npKinds"
+        android:layout_below="@+id/tableLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        </NumberPicker>
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/npPoints"
+        android:layout_below="@+id/tableLayout"
+        android:layout_toRightOf="@+id/npKinds"
+        android:layout_toEndOf="@+id/npKinds">
+
+    </NumberPicker>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open"
+        android:id="@+id/bOpen"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="83dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:id="@+id/bClose"
+        android:layout_below="@+id/tableLayout"
+        android:layout_toRightOf="@+id/bOpen"
+        android:layout_marginBottom="83dp" />
+
+    <Button
+
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Score"
+        android:id="@+id/bScore"
+        android:layout_marginBottom="83dp"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/bClose"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>
