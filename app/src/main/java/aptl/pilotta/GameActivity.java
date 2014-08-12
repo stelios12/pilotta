@@ -598,12 +598,12 @@ public class GameActivity extends Activity implements
             cardRes[i] = BitmapFactory.decodeResource(getResources(), Utils.imageResources[i]);
         }
 
-        myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+        /*myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
         HashDecide decide = new HashDecide(myHashcode);
         byte[] encoded = Serializer.serialize(decide);
         for (Participant p : mParticipants) {
             Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
-        }
+        }*/
 
     }
 
