@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by constantinos on 08/08/2014.
  */
-public class Card {
+public class Card implements Serializable {
 
     private final Kind kind;
     private final Value value;
@@ -27,6 +27,28 @@ public class Card {
 
     public final int getImageRes() {
         return imageRes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || ((Object)this).getClass() != o.getClass()) return false;
+
+        Card card = (Card) o;
+
+        if (imageRes != card.imageRes) return false;
+        if (kind != card.kind) return false;
+        if (value != card.value) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = kind.hashCode();
+        result = 31 * result + value.hashCode();
+        result = 31 * result + imageRes;
+        return result;
     }
 
     @Override

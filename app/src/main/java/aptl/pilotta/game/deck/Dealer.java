@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class Dealer {
 
-    private final ArrayList<Card> deck;
+    public final ArrayList<Card> deck;
 
     public Dealer(){
         deck = new ArrayList<Card>();
