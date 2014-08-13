@@ -65,10 +65,10 @@ public class GameView extends SurfaceView {
             Value v1 = lhs.getValue();
             Value v2 = rhs.getValue();
 
-            if (sortCode(k1) < sortCode(k2)) {
+            if (sortKind(k1) < sortKind(k2)) {
                 return -1;
-            } else if (sortCode(k1) == sortCode(k2)) {
-                if (v1.hashCode() > v2.hashCode()) {
+            } else if (sortKind(k1) == sortKind(k2)) {
+                if (sortValue(v1) < sortValue(v2)) {
                     return -1;
                 } else {
                     return 1;
@@ -83,7 +83,7 @@ public class GameView extends SurfaceView {
             return false;
         }
 
-        private int sortCode(Kind k) {
+        private int sortKind(Kind k) {
             switch (k) {
                 case CLUBS:
                     return 1;
@@ -95,6 +95,29 @@ public class GameView extends SurfaceView {
                     return 4;
                 default:
                     return 5;
+            }
+        }
+
+        private int sortValue(Value v) {
+            switch (v) {
+                case ACE:
+                    return 1;
+                case KING:
+                    return 2;
+                case QUEEN:
+                    return 3;
+                case JACK:
+                    return 4;
+                case TEN:
+                    return 5;
+                case NINE:
+                    return 6;
+                case EIGHT:
+                    return 7;
+                case SEVEN:
+                    return 8;
+                default:
+                    return 9;
             }
         }
 

@@ -648,6 +648,12 @@ public class GameActivity extends Activity implements
                             }
                         }
                     }
+                    //give cards to host
+                    for (int i = 0; i <8; i++) {
+                        Card c = d.giveCard();
+                        gameView.addCard(c);
+                    }
+
                 } else {
                     Log.d("decide", "not master");
                 }
