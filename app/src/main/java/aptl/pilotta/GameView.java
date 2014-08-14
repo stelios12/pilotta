@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,8 @@ public class GameView extends SurfaceView {
     private ArrayList<Card> cards;
     private static CardSorter cardSorter;
     private static Bitmap[] cardRes = new Bitmap[32];
+    private final int cardHeight=200;
+    private final int cardWidth=150;
 
     public GameView(Context context) {
         super(context);
@@ -30,7 +33,7 @@ public class GameView extends SurfaceView {
 
         for (int i = 0; i < cardRes.length; i++) {
             cardRes[i] = BitmapFactory.decodeResource(getResources(), Utils.imageResources[i]);
-            cardRes[i] = Bitmap.createScaledBitmap(cardRes[i], 150, 200, false);
+            cardRes[i] = Bitmap.createScaledBitmap(cardRes[i], cardWidth, cardHeight, false);
         }
 
     }
@@ -44,15 +47,17 @@ public class GameView extends SurfaceView {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawARGB(255,52,124,23);
-        int width = getWidth();
-        int height = getHeight();
-        int offset = width/10;
+        int screenWidth = getWidth();
+        int screenHeight = getHeight();
+        int offsetX=((screenWidth-((cards.size())*cardWidth))/2);
+        int offsetY = screenHeight-(cardHeight);
         for (Card c : cards) {
             Bitmap map = cardRes[c.getImageRes()];
-            canvas.drawBitmap(map,offset,0,null);
-            offset += width/11;
-        }
+            offsetX += cardWidth;
+            canvas.drawBitmap(map,offsetX,offsetY,null);
 
+        }
+        invalidate();
     }
 
     private class CardSorter implements Comparator<Card> {
