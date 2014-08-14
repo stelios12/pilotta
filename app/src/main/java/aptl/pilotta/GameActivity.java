@@ -5,7 +5,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,6 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
@@ -34,9 +39,11 @@ import java.util.List;
 
 import aptl.pilotta.game.comm.HashDecide;
 import aptl.pilotta.game.comm.PlayerCard;
+import aptl.pilotta.game.comm.SetPair;
 import aptl.pilotta.game.deck.Card;
 import aptl.pilotta.game.deck.Dealer;
 import aptl.pilotta.game.utils.Serializer;
+import aptl.pilotta.game.utils.Utils;
 
 public class GameActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -86,6 +93,7 @@ public class GameActivity extends Activity implements
     private static int times = 0;
     private static boolean decider = true;
     private static GameView gameView;
+    private static SetPair pair;
 
     /**
      * Called when the activity is starting. Restores the activity state.
@@ -555,8 +563,6 @@ public class GameActivity extends Activity implements
 
     @Override
     public void onLeftRoom(int i, String s) {
-        times = 0;
-        decider = true;
         recreate();
     }
 
@@ -620,6 +626,7 @@ public class GameActivity extends Activity implements
         gameView.setBackgroundResource(R.drawable.green_back);
         setContentView(gameView);
 
+        //Send hashcode to others to decide master node
         myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
         HashDecide decide = new HashDecide(myHashcode);
         byte[] encoded = Serializer.serialize(decide);
@@ -641,46 +648,149 @@ public class GameActivity extends Activity implements
         Object decoded = Serializer.deserialize(data);
 
         if (decoded instanceof HashDecide) {
-            times++;
-            myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
-            HashDecide hd = (HashDecide)decoded;
-            decider = decider &&  myHashcode > hd.getHashcode();
-            if (times == 3) {
-                if (decider) {
-                    Log.d("decide","master");
-                    Dealer d = new Dealer();
-                    Log.d("cards",Integer.toString(d.deck.size()));
-                    Log.d("size",Integer.toString(mParticipants.size()));
-                    Log.d("mmyid",mMyId);
-                    for (Participant p : mParticipants) {
-                        if (!mMyId.equals(p.getParticipantId())) {
-                            for (int i = 0; i <8; i++) {
-                                Card c = d.giveCard();
-                                PlayerCard pc = new PlayerCard(c);
-                                byte[] encoded = Serializer.serialize(pc);
-                                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
-                            }
-                            Log.d(p.getParticipantId()," gave 8 cards");
-                        }
-                    }
-                    Log.d("Size of deck",Integer.toString(d.deck.size()));
-                    //give cards to host
-                    for (int i = 0; i <8; i++) {
-                        Card c = d.giveCard();
-                        gameView.addCard(c);
-                    }
-                    gameView.invalidate();
-                } else {
-                    Log.d("decide", "not master");
+            hashDecideMessage(decoded);
+        } else if (decoded instanceof PlayerCard) {
+            playerCardMessage(decoded);
+        } else if (decoded instanceof SetPair) {
+            setPairMessage(decoded);
+        }
+    }
+
+    //Decided who is to become the master
+    private void hashDecideMessage(Object decoded) {
+        myHashcode = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId().hashCode();
+        HashDecide hd = (HashDecide)decoded;
+        decider = decider &&  myHashcode > hd.getHashcode();
+        times++;
+        if (times == 3) {
+            if (decider) {
+                Log.d("decide","master");
+                //Decide pairs
+                decidePairs();
+                //Give cards to players
+                givePlayerCards();
+            } else {
+                Log.d("decide", "not master");
+            }
+            times = 0;
+            decider = true;
+        }
+    }
+
+    //Gives cards to players
+    private void givePlayerCards() {
+        //Send cards to other players
+        Dealer d = new Dealer();
+        for (Participant p : mParticipants) {
+            if (!mMyId.equals(p.getParticipantId())) {
+                for (int i = 0; i <8; i++) {
+                    Card c = d.giveCard();
+                    PlayerCard pc = new PlayerCard(c);
+                    byte[] encoded = Serializer.serialize(pc);
+                    Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,
+                                                                  encoded,mRoomId,
+                                                                  p.getParticipantId());
                 }
             }
-        } else if (decoded instanceof PlayerCard) {
-            Log.d("Card","setting card");
-            PlayerCard pc = (PlayerCard)decoded;
-            Card c = pc.getCard();
-            gameView.addCard(c);
-            //gameView.invalidate();
         }
+        //Give cards to host
+        for (int i = 0; i <8; i++) {
+            Card c = d.giveCard();
+            gameView.addCard(c);
+        }
+        //Reset gameView
+        gameView.invalidate();
+    }
+
+    //Adds cards to game screen
+    private void playerCardMessage(Object decoded) {
+        Log.d("Card","setting card");
+        PlayerCard pc = (PlayerCard)decoded;
+        Card c = pc.getCard();
+        gameView.addCard(c);
+    }
+
+    //Decides pairs
+    private void decidePairs() {
+        ArrayList<Participant> duplicate = new ArrayList<Participant>();
+        for (Participant p : mParticipants) {
+            if (!p.getParticipantId().equals(mMyId)) {
+                duplicate.add(p);
+            }
+        }
+
+        //Decide for host player
+        SetPair host = new SetPair(duplicate.get(0).getParticipantId(),
+                                   duplicate.get(1).getParticipantId(),
+                                   duplicate.get(2).getParticipantId());
+
+        //Decide left player
+        SetPair leftPlayer = new SetPair(duplicate.get(2).getParticipantId(),
+                                         duplicate.get(0).getParticipantId(),
+                                         mMyId);
+
+        //Decide right player
+        SetPair rightPlayer = new SetPair(duplicate.get(1).getParticipantId(),
+                                          mMyId,
+                                          duplicate.get(2).getParticipantId());
+
+        //Decide for top player
+        SetPair topPlayer = new SetPair(mMyId,
+                                        duplicate.get(2).getParticipantId(),
+                                        duplicate.get(1).getParticipantId());
+
+        byte[] encoded;
+
+        //Send to left player
+        encoded = Serializer.serialize(leftPlayer);
+        Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+                                                      this,
+                                                      encoded,
+                                                      mRoomId,
+                                                      duplicate.get(1).getParticipantId());
+        //Send to right player
+        encoded = Serializer.serialize(rightPlayer);
+        Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+                this,
+                encoded,
+                mRoomId,
+                duplicate.get(2).getParticipantId());
+
+        //Send to top player
+        encoded = Serializer.serialize(topPlayer);
+        Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+                this,
+                encoded,
+                mRoomId,
+                duplicate.get(0).getParticipantId());
+
+
+        //Set own pair TODO::Update gamescreen
+        pair = host;
+
+    }
+
+    //Sets the pairs and updates screens
+    private void setPairMessage(Object decoded) {
+        SetPair sp = (SetPair)decoded;
+        pair = sp;
+
+        //TODO::STUFF
+        ImageManager im = ImageManager.create(getApplicationContext());
+        Uri playerImageUri = mParticipants.get(0).getIconImageUri();
+
+        if (playerImageUri == null) {
+            //No player portrait found use unknown instead
+            Bitmap map = BitmapFactory.decodeResource(getResources(), R.drawable.unknown_player);
+        } else {
+            //Player portrait found
+            try {
+                Bitmap map = MediaStore.Images.Media.getBitmap(getContentResolver(),playerImageUri);
+            } catch (Exception e) {
+
+            }
+        }
+
     }
 
     @Override
