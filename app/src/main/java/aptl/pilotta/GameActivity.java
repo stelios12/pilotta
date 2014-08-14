@@ -545,6 +545,7 @@ public class GameActivity extends Activity implements
     public void onLeftRoom(int i, String s) {
         times = 0;
         decider = true;
+        recreate();
     }
 
     @Override
@@ -611,7 +612,7 @@ public class GameActivity extends Activity implements
         HashDecide decide = new HashDecide(myHashcode);
         byte[] encoded = Serializer.serialize(decide);
         for (Participant p : mParticipants) {
-            if (mMyId != p.getParticipantId()) {
+            if (!mMyId.equals(p.getParticipantId())) {
                 Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
             }
         }
@@ -638,22 +639,25 @@ public class GameActivity extends Activity implements
                     Dealer d = new Dealer();
                     Log.d("cards",Integer.toString(d.deck.size()));
                     Log.d("size",Integer.toString(mParticipants.size()));
+                    Log.d("mmyid",mMyId);
                     for (Participant p : mParticipants) {
-                        if (mMyId != p.getParticipantId()) {
+                        if (!mMyId.equals(p.getParticipantId())) {
                             for (int i = 0; i <8; i++) {
                                 Card c = d.giveCard();
                                 PlayerCard pc = new PlayerCard(c);
                                 byte[] encoded = Serializer.serialize(pc);
                                 Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,this,encoded,mRoomId,p.getParticipantId());
                             }
+                            Log.d(p.getParticipantId()," gave 8 cards");
                         }
                     }
+                    Log.d("Size of deck",Integer.toString(d.deck.size()));
                     //give cards to host
                     for (int i = 0; i <8; i++) {
                         Card c = d.giveCard();
                         gameView.addCard(c);
                     }
-
+                    gameView.invalidate();
                 } else {
                     Log.d("decide", "not master");
                 }
@@ -663,7 +667,7 @@ public class GameActivity extends Activity implements
             PlayerCard pc = (PlayerCard)decoded;
             Card c = pc.getCard();
             gameView.addCard(c);
-            gameView.invalidate();
+            //gameView.invalidate();
         }
     }
 

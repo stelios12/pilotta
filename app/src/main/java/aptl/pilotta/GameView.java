@@ -38,7 +38,7 @@ public class GameView extends SurfaceView {
     public void addCard(Card card) {
         cards.add(card);
         Collections.sort(cards,cardSorter);
-
+        invalidate();
     }
 
     @Override
