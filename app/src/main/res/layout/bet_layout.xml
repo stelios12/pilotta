@@ -6,8 +6,9 @@
 
 
     <TableLayout
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="100dp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/bOpen"
@@ -21,7 +22,8 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <TextView
-                android:textAlignment="center"
+
+                android:gravity="center"
                 android:id="@+id/tvPlayer1"
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
@@ -31,7 +33,7 @@
                 > </TextView>
             <TextView
                 android:id="@+id/tvPlayer2"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:text="Player2"
@@ -40,7 +42,7 @@
                 > </TextView>
             <TextView
                 android:id="@+id/tvPlayer3"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:text="Player3"
@@ -49,14 +51,13 @@
                 > </TextView>
             <TextView
                 android:id="@+id/tvPlayer4"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:text="Player4"
                 android:layout_weight="1"
                 android:textSize="22dp"
                 > </TextView>
-
 
         </TableRow>
        </ScrollView>
@@ -71,48 +72,27 @@
         android:text="Pass"
         android:id="@+id/bPass"
         android:layout_toStartOf="@+id/bOpen"
-
         android:layout_below="@+id/tableLayout"
         android:layout_toLeftOf="@+id/bOpen" />
-
-    <NumberPicker
-        android:layout_marginLeft="25dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/npKinds"
-        android:layout_below="@+id/tableLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        </NumberPicker>
-
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/npPoints"
-        android:layout_below="@+id/tableLayout"
-        android:layout_toRightOf="@+id/npKinds"
-        android:layout_toEndOf="@+id/npKinds">
-
-    </NumberPicker>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open"
         android:id="@+id/bOpen"
+        android:layout_marginBottom="81dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="83dp" />
+        android:layout_toLeftOf="@+id/bClose"
+        android:layout_toStartOf="@+id/bClose" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Close"
         android:id="@+id/bClose"
-        android:layout_below="@+id/tableLayout"
-        android:layout_toRightOf="@+id/bOpen"
-        android:layout_marginBottom="83dp" />
+        android:layout_alignTop="@+id/bScore"
+        android:layout_toLeftOf="@+id/bScore"
+        android:layout_toStartOf="@+id/bScore" />
 
     <Button
 
@@ -120,11 +100,107 @@
         android:layout_width="wrap_content"
         android:text="Score"
         android:id="@+id/bScore"
-        android:layout_marginBottom="83dp"
+        android:layout_below="@+id/tableLayout"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/bClose"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="0dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bet"
+        android:id="@+id/bBet"
+        android:layout_alignTop="@+id/bPass"
+        android:layout_toStartOf="@+id/bPass"
+        android:layout_toLeftOf="@+id/bPass"
         />
+
+
+
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView"
+        android:src="@drawable/card1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+         />
+
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView2"
+        android:src="@drawable/card2"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView"
+    />
+
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView3"
+        android:src="@drawable/card3"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView2"
+        />
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView4"
+        android:src="@drawable/card4"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView3"
+        />
+
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView5"
+        android:src="@drawable/card5"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView4"
+        />
+
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView6"
+        android:src="@drawable/card6"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView5"
+        />
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView7"
+        android:src="@drawable/card7"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView6"
+        />
+    <ImageView
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:id="@+id/imageView8"
+        android:src="@drawable/card8"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/imageView7"
+        />
+
+    <Spinner
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:id="@+id/spinner"
+        android:layout_below="@+id/tableLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <Spinner
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:id="@+id/spinner2"
+        android:layout_toRightOf="@+id/spinner"
+        android:layout_below="@+id/tableLayout"
+
+         />
 
 </RelativeLayout>
