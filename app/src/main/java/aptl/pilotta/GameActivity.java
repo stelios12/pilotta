@@ -116,16 +116,16 @@ public class GameActivity extends Activity implements
      */
 
     private void initialize(){
-        setContentView(R.layout.bet_layout);
+        //setContentView(R.layout.bet_layout);
 
 
-        /*setContentView(R.layout.main_screen);
+        setContentView(R.layout.main_screen);
         findViewById(R.id.bExit).setOnClickListener(this);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.bLogOut).setOnClickListener(this);
         findViewById(R.id.bChallengeFriends).setOnClickListener(this);
         findViewById(R.id.bInbox).setOnClickListener(this);
-        findViewById(R.id.bQuickGame).setOnClickListener(this);*/
+        findViewById(R.id.bQuickGame).setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -368,10 +368,11 @@ public class GameActivity extends Activity implements
                 gameView.setBackgroundResource(R.drawable.green_back);
                 setContentView(gameView);
                 Dealer d= new Dealer();
-                for (int i=0; i<8; i++){
+                for (int i=0; i<11; i++){
                     gameView.addCard(d.giveCard());
-             //gameView.invalidate();
                 }
+
+
                 //finish();
                 break;
             case (R.id.bChallengeFriends):    // enter the rest of the button attributes

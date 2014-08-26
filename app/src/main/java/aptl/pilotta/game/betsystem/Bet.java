@@ -7,7 +7,7 @@ public class Bet {
     private final Kind kind;
     private final int lastBetScore;
 
-    protected   Bet (Kind kind, int lastBetScore){
+    private   Bet (Kind kind, int lastBetScore){
         this.kind=kind;
         this.lastBetScore=lastBetScore;
     }
